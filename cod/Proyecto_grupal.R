@@ -136,9 +136,11 @@ for (var in vars_cuantitativas) {
       y = "Cantidad de personas"
     )
   print(grafico)
-  
+ ggsave(filename = paste0(
+  "graficos/Distribucion_", var, ".png"),
+   plot = grafico, width = 8, height = 6)
 }
-ggsave("graficos/Distribucion.png", plot = grafico, width = 8, height = 6)
+
 
 
 #Este gráfico muestra si existe una relación entre la edad y el número de parejas sexuales.
@@ -147,7 +149,15 @@ graf_edad_parejas <- ggplot(cancer_cervix_clean, aes(x = Age, y = Number.of.sexu
   labs(title = "Edad vs Número de Parejas Sexuales",
        x = "Edad",
        y = "Número de Parejas Sexuales") +
-  theme_minimal()
+  theme_minimal() +
+  theme(
+      plot.title = element_text(face = "bold", color = "#00264d", size = 15, hjust = 0.5),
+      axis.title = element_text(color = "#003366"),
+      panel.grid.minor = element_blank(),
+      panel.grid.major.x = element_blank(),
+      plot.background = element_rect(fill = "white", color = NA)
+    )
+
 ggsave("graficos/Edad_ParejasSexuales.png", plot = graf_edad_parejas, width = 8, height = 6)
 
 # Muestra la relación entre la edad de inicio y el número de parejas. 
@@ -156,7 +166,15 @@ graf_edadInicio_numPare <- ggplot(cancer_cervix_clean, aes(x = First.sexual.inte
   labs(title = "Edad de inicio de relaciones sexuales vs Número de parejas sexuales",
        x = "Edad de inicio de relaciones sexuales",
        y = "Número de parejas sexuales") +
-  theme_minimal()
+  theme_minimal() +
+  theme(
+      plot.title = element_text(face = "bold", color = "#00264d", size = 15, hjust = 0.5),
+      axis.title = element_text(color = "#003366"),
+      panel.grid.minor = element_blank(),
+      panel.grid.major.x = element_blank(),
+      plot.background = element_rect(fill = "white", color = NA)
+    )
+
 ggsave("graficos/EdadInicio_ParejasSexuales.png", plot = graf_edadInicio_numPare, width = 8, height = 6)
 
 
@@ -168,7 +186,14 @@ graf_vph_cancer <- ggplot(cancer_cervix_clean, aes(x = factor(Dx.HPV), fill = fa
        y = "Proporción",
        fill = "Diagnóstico de cáncer (Dx)") +
   scale_fill_manual(values = c("skyblue", "tomato")) +
-  theme_minimal()
+  theme_minimal() +
+  theme(
+      plot.title = element_text(face = "bold", color = "#00264d", size = 15, hjust = 0.5),
+      axis.title = element_text(color = "#003366"),
+      panel.grid.minor = element_blank(),
+      panel.grid.major.x = element_blank(),
+      plot.background = element_rect(fill = "white", color = NA)
+    )
 ggsave("graficos/VPH_CxCervix.png", plot = graf_vph_cancer, width = 8, height = 6)
 
 graf_uso_anticoncept <- ggplot(cancer_cervix_clean, aes(x = factor(Hormonal.Contraceptives))) +
@@ -176,7 +201,14 @@ graf_uso_anticoncept <- ggplot(cancer_cervix_clean, aes(x = factor(Hormonal.Cont
   labs(title = "Distribución del uso de anticonceptivos hormonales",
        x = "Uso (0 = no, 1 = sí)",
        y = "Cantidad de personas") +
-  theme_minimal()
+  theme_minimal() +
+  theme(
+      plot.title = element_text(face = "bold", color = "#00264d", size = 15, hjust = 0.5),
+      axis.title = element_text(color = "#003366"),
+      panel.grid.minor = element_blank(),
+      panel.grid.major.x = element_blank(),
+      plot.background = element_rect(fill = "white", color = NA)
+    )
 ggsave("graficos/Anticonceptivos.png", plot = graf_uso_anticoncept, width = 8, height = 6)
 
 
@@ -195,7 +227,13 @@ graf_fxRiesgo <- ggplot(cat_long, aes(x = variable, fill = factor(valor))) +
        x = "Variable",
        y = "Cantidad de personas",
        fill = "Valor (0 = no, 1 = sí)")+scale_fill_manual(values = c("gray70","darkmagenta")) +theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+      plot.title = element_text(face = "bold", color = "#00264d", size = 15, hjust = 0.5),
+      axis.title = element_text(color = "#003366"),
+      panel.grid.minor = element_blank(),
+      panel.grid.major.x = element_blank(),
+      plot.background = element_rect(fill = "white", color = NA)
+    )
 ggsave("graficos/FactoresRiesgo_CxCervical.png", plot = graf_fxRiesgo, width = 8, height = 6)
 
 
@@ -213,7 +251,13 @@ graf_outliers <- ggplot(numeric_df, aes(x = name, y = value)) +
   labs(title = "Posibles outliers en variables numéricas",
        x = "Variable", y = "Valor") +
   theme_minimal() +
-  theme(axis.text.y = element_text(size = 8))
+  theme(axis.text.y = element_text(size = 8),
+      plot.title = element_text(face = "bold", color = "#00264d", size = 15, hjust = 0.5),
+      axis.title = element_text(color = "#003366"),
+      panel.grid.minor = element_blank(),
+      panel.grid.major.x = element_blank(),
+      plot.background = element_rect(fill = "white", color = NA)
+    )
 ggsave("graficos/Outliers.png", plot = graf_outliers, width = 8, height = 6)
 
 #---------------------------------------------------------------------------------
