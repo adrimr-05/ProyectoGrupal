@@ -13,7 +13,7 @@ cancer_cervix <- read.csv("data/risk_factors_cervical_cancer.csv", na.strings = 
 #-----
 
 #-----
-# Identificacion de datos
+# Identificación de datos
 
 cols_integer <- c(
   "Age",
@@ -64,12 +64,12 @@ cancer_cervix <- cancer_cervix %>%
   mutate(across(all_of(cols_factor), ~ factor(ifelse(as.numeric(.) == 1, "Sí", ifelse(as.numeric(.) == 0, "No", NA)), levels = c("No", "Sí"))))
 
 
-#Aqui verificamos lo cambios
+# Aquí verificamos los cambios
 str(cancer_cervix)
 #---------
 
 #---------
-#2- Agregar las primeras 5 filas de su tabla de datos.
+# 2- Agregar las primeras 5 filas de su tabla de datos.
 
 head(cancer_cervix, 5)
 
@@ -77,7 +77,7 @@ head(cancer_cervix, 5)
 
 # Limpieza de datos
 
-#Se cambian los NA por la mediana de cada variable
+# Se cambian los NA por la mediana de cada variable
 df_imputado <- cancer_cervix
 
 for (col in names(df_imputado)) {
@@ -86,7 +86,7 @@ for (col in names(df_imputado)) {
     df_imputado[[col]][is.na(df_imputado[[col]])] <- mediana
   }
 }
-#Primero se identifican las variables cuantitativas
+# Primero se identifican las variables cuantitativas
 vars_cuantitativas <- c(
   "Age",
   "Number.of.sexual.partners",
@@ -143,9 +143,9 @@ for (var in vars_cuantitativas) {
 
 
 
-#Este gráfico muestra si existe una relación entre la edad y el número de parejas sexuales.
+# Este gráfico muestra si existe una relación entre la edad y el número de parejas sexuales.
 graf_edad_parejas <- ggplot(cancer_cervix_clean, aes(x = Age, y = Number.of.sexual.partners)) +
-  geom_point(alpha = 0.6, color = "red")  +
+  geom_boxplot(fill ="red")  +
   labs(title = "Edad vs Número de Parejas Sexuales",
        x = "Edad",
        y = "Número de Parejas Sexuales") +
@@ -162,7 +162,7 @@ ggsave("graficos/Edad_ParejasSexuales.png", plot = graf_edad_parejas, width = 8,
 
 # Muestra la relación entre la edad de inicio y el número de parejas. 
 graf_edadInicio_numPare <- ggplot(cancer_cervix_clean, aes(x = First.sexual.intercourse, y = Number.of.sexual.partners)) +
-  geom_point(alpha = 0.6, color = "purple") +
+  geom_boxplot(fill = "purple") +
   labs(title = "Edad de inicio de relaciones sexuales vs Número de parejas sexuales",
        x = "Edad de inicio de relaciones sexuales",
        y = "Número de parejas sexuales") +
@@ -178,7 +178,7 @@ graf_edadInicio_numPare <- ggplot(cancer_cervix_clean, aes(x = First.sexual.inte
 ggsave("graficos/EdadInicio_ParejasSexuales.png", plot = graf_edadInicio_numPare, width = 8, height = 6)
 
 
-# Diagnostico de VPH y la aparición de cáncer de cérvix 
+# Diagnóstico de VPH y la aparición de cáncer de cérvix 
 graf_vph_cancer <- ggplot(cancer_cervix_clean, aes(x = factor(Dx.HPV), fill = factor(Dx))) +
   geom_bar(position = "fill") +
   labs(title = "Proporción de diagnóstico de cáncer vs diagnóstico de VPH",
@@ -212,7 +212,7 @@ graf_uso_anticoncept <- ggplot(cancer_cervix_clean, aes(x = factor(Hormonal.Cont
 ggsave("graficos/Anticonceptivos.png", plot = graf_uso_anticoncept, width = 8, height = 6)
 
 
-#Graficos de la relacion de factores de riesgo con la deteccion de cancer
+# Gráficos de la relación de factores de riesgo con la detección de cáncer
 # Seleccionar variables categóricas
 cat_vars <- cancer_cervix_clean %>%
   select(Smokes, Hormonal.Contraceptives, IUD, STDs, Dx.Cancer)
@@ -226,8 +226,8 @@ graf_fxRiesgo <- ggplot(cat_long, aes(x = variable, fill = factor(valor))) +
   labs(title = "Factores de Riesgo",
        x = "Variable",
        y = "Cantidad de personas",
-       fill = "Valor (0 = no, 1 = sí)")+scale_fill_manual(values = c("gray70","darkmagenta")) +theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+       fill = "Valor (No, Sí)")+scale_fill_manual(values = c("No"="gray70","Sí"="darkmagenta")) +theme_minimal() +
+  theme(axis.text.x = element_text(angle = 0, hjust = 0.5),
       plot.title = element_text(face = "bold", color = "#00264d", size = 15, hjust = 0.5),
       axis.title = element_text(color = "#003366"),
       panel.grid.minor = element_blank(),
@@ -247,7 +247,7 @@ numeric_df <- cancer_cervix %>% select(where(is.numeric)) %>% pivot_longer(cols 
 
 graf_outliers <- ggplot(numeric_df, aes(x = name, y = value)) +
   geom_boxplot(fill = "lightgreen") +
-  coord_flip() +  # <- gira el gráfico
+  coord_flip() + 
   labs(title = "Posibles outliers en variables numéricas",
        x = "Variable", y = "Valor") +
   theme_minimal() +
@@ -262,13 +262,16 @@ ggsave("graficos/Outliers.png", plot = graf_outliers, width = 8, height = 6)
 
 #---------------------------------------------------------------------------------
 
-##8- Investigar técnicas que permitan subsanar los valores perdidos y outliers.
+## 8- Investigar técnicas que permitan subsanar los valores perdidos y outliers.
 
-##Para manejar los valores faltantes se suelen combinar tres estrategias. (1) Eliminación de casos: descarta filas o celdas con NA, es simple y evita supuestos, pero reduce el tamaño muestral y puede sesgar si la ausencia no es aleatoria. (2) Imputación simple: reemplaza NA con una estadística que puede ser la mediana o la media depende del analisis, preserva el tamaño muestral y es fácil de interpretar, aunque subestima la variabilidad. (3) Imputación multivariante: usa la información conjunta de otras variables para estimar los NA, manteniendo relaciones entre variables y reflejando mejor la incertidumbre, requiere más cómputo y supuestos, pero ofrece imputaciones más realistas.
+##* Para manejar los valores faltantes se suelen combinar tres estrategias. 
+##* (1) Eliminación de casos: descarta filas o celdas con NA, es simple y evita supuestos, pero reduce el tamaño muestral y puede sesgar si la ausencia no es aleatoria. 
+##* (2) Imputación simple: reemplaza NA con una estadística que puede ser la mediana o la media depende del analisis, preserva el tamaño muestral y es fácil de interpretar, aunque subestima la variabilidad. 
+##* (3) Imputación multivariante: usa la información conjunta de otras variables para estimar los NA, manteniendo relaciones entre variables y reflejando mejor la incertidumbre, requiere más cómputo y supuestos, pero ofrece imputaciones más realistas.
 
 #----------------------------------------------------------------------------------
 
-# Aplicacion de tecnicas y metodos estadisticos
+# Aplicación de técnicas y métodos estadísticos
 
 
 #Haremos tablas de Frecuencia para poder ver proporciones y prevalencias.
@@ -295,38 +298,38 @@ cancer_cervix_clean %>%
   count(IUD) %>% 
   mutate(porcentaje = n / sum(n) * 100)
 
-# Porcentaje de personas que tiene o ha tenido enfermedades de transmision sexual
+# Porcentaje de personas que tiene o ha tenido enfermedades de transmisión sexual
 
 cancer_cervix_clean %>% 
   count(STDs) %>% 
   mutate(porcentaje = n / sum(n) * 100)
 
-# Porcentaje de personas que tiene o han tenido cancer 
+# Porcentaje de personas que tiene o han tenido cáncer 
 
 cancer_cervix_clean %>% 
   count(Dx.Cancer) %>% 
   mutate(porcentaje = n / sum(n) * 100)
 
 
-#Cuantos pacientes han tenido el virus del Papiloma Humano
+# Cuántos pacientes han tenido el virus del Papiloma Humano
 
 cancer_cervix_clean %>% 
   count(STDs.HPV) %>% 
   mutate(porcentaje = n / sum(n) * 100)
 
-# Porcentaje de pacientes que se le ha aplicado una biopsia y si resultado
+# Porcentaje de pacientes que se le ha aplicado una biopsia y su resultado
 
 cancer_cervix_clean %>% 
   count(Biopsy) %>% 
   mutate(porcentaje = n / sum(n) * 100)
 
-#Porcentaje de pacientes que se realizaron la prubea de Hinselmann
+# Porcentaje de pacientes que se realizaron la prueba de Hinselmann
 
 cancer_cervix_clean %>% 
   count(Hinselmann) %>% 
   mutate(porcentaje = n / sum(n) * 100)
 
-#Porcentaje de pacientes que se realizaron la prubea de Schiller
+# Porcentaje de pacientes que se realizaron la prueba de Schiller
 
 cancer_cervix_clean %>% 
   count(Schiller) %>% 
@@ -501,9 +504,9 @@ chisq.test(tabla_hinsel)
 chisq.test(tabla_schiller)
 chisq.test(tabla_dxhpv)
 
-#Usamos Fisher porque para datos mas pequenos es una mejor aproximacion, debido a que el Chi cuadrado falla cuando algun dato da 0 o son de frecuencia pequena.
+# Usamos Fisher porque para datos más pequeños es una mejor aproximación, debido a que el Chi cuadrado falla cuando algún dato da 0 o son de frecuencia pequeña.
 
-# Metodo de Fisher
+# Método de Fisher
 fisher.test(tabla_smokes)
 fisher.test(tabla_horm)
 fisher.test(tabla_iud)
@@ -532,6 +535,6 @@ resultado_fisher[] <- lapply(resultado_fisher, function(x) {
 })
 resultado_fisher
 
-# De esta tala podemos sacar varias conclusiones, los factores que no mostraron asociacion significativa con el cancer cervico
-# Los anticonceptivos hormonales y el ETS en general no tienen ninguna relacion con la posibilidad de llegar a tnener cancer cerico ya que p>= 0.05
+# De esta tabla podemos sacar varias conclusiones, los factores que no mostraron asociación significativa con el cáncer cérvico.
+# Los anticonceptivos hormonales y el ETS en general no tienen ninguna relación con la posibilidad de llegar a tener cáncer cérvico ya que p>= 0.05
 
